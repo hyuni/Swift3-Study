@@ -5,11 +5,12 @@
 //: - Equaltable 구현
 //: - Iterator 구현
 
+import Foundation
 import UIKit
 import XCTest
 
 
-public struct Stack<T> {
+public struct Stack<T: Equatable>: Equatable {
     fileprivate var array = [T]()
     
     public var count: Int {
@@ -32,7 +33,22 @@ public struct Stack<T> {
         return array.last
     }
     
+    public static func ==(lhs: Stack<T>, rhs: Stack<T>) -> Bool {
+        return lhs.array == rhs.array
+    }
 }
+
+
+
+//extension Stack: Equatable where T: Equatable {
+//    public static func ==(lhs: Stack<T>, rhs: Stack<T>) -> Bool {
+//        return lhs.array == rhs.array
+//    }
+//}
+
+//extension Array: Equatable where Element: Equatable {
+//
+//}
 
 extension Stack: Sequence {
     public func makeIterator() -> AnyIterator<T> {
@@ -44,36 +60,36 @@ extension Stack: Sequence {
 }
 
 
-extension Stack where T: Equatable {
-    public static func ==(lhs: Stack<T>, rhs: Stack<T>) -> Bool {
-        return lhs.array == rhs.array
-    }
-    
-    /// comment-out : T supported Equatable. [T] supperted Equatable
+//extension Stack where T: Equatable {
 //    public static func ==(lhs: Stack<T>, rhs: Stack<T>) -> Bool {
-//        guard lhs.count == rhs.count else {
-//            return false
-//        }
-//        
-//        var result = true
-//        
-//        for (index1, item1) in lhs.array.enumerated() {
-//            let item2 = rhs.array[index1]
-//            
-//            if item1 == item2 {
-//                //result = false
-//                //break
-//                continue
-//            } else {
-//                result = false
-//                break
-//            }
-//        }
-//        
-//        return result
+//        return lhs.array == rhs.array
 //    }
-    
-}
+//    
+//    /// comment-out : T supported Equatable. [T] supperted Equatable
+////    public static func ==(lhs: Stack<T>, rhs: Stack<T>) -> Bool {
+////        guard lhs.count == rhs.count else {
+////            return false
+////        }
+////        
+////        var result = true
+////        
+////        for (index1, item1) in lhs.array.enumerated() {
+////            let item2 = rhs.array[index1]
+////            
+////            if item1 == item2 {
+////                //result = false
+////                //break
+////                continue
+////            } else {
+////                result = false
+////                break
+////            }
+////        }
+////        
+////        return result
+////    }
+//    
+//}
 
 
 //: TestCase
@@ -96,43 +112,22 @@ class StackTestCase: XCTestCase {
         XCTAssertEqual(stack1.count, 5)
         XCTAssertEqual(stack2.count, 5)
         
-        // element
         XCTAssertEqual(stack1.array, ["Carl", "Lisa", "Stephaie", "Jeff", "Wade"])
         XCTAssertEqual(stack2.array, ["Carl", "Lisa", "Stephaie", "Jeff", "Wade"])
         
+        XCTAssert(stack1.array == stack2.array)
         XCTAssertEqual(stack1.array, stack2.array)
         
-        // error - Cannot invoke 'XCTAssertEqual' with an argument list of type '(Stack<String>, Stack<String>)'
-        //XCTAssertEqual(stack1, stack2)
-        
-        
-        // comment-out
-//        if stack1 == stack2 {
-//            print("equal stack1(\(stack1.array)), stack2(\(stack2.array))")
-//        } else {
-//            print("not equal stack1(\(stack1.array)), stack2(\(stack2.array))")
-//        }
-//        
-//        
-//        print(stack1.array)
+        XCTAssert(stack1 == stack2)
+        XCTAssertEqual(stack1, stack2)
         
         stack1.push("Mike")
         
         XCTAssertEqual(stack1.count, 6)
         XCTAssertEqual(stack1.array, ["Carl", "Lisa", "Stephaie", "Jeff", "Wade", "Mike"])
         
-//        print(stack1.array)
-//        
-//        print(stack2.array)
-        
         XCTAssertEqual(stack2.count, 5)
         XCTAssertNotEqual(stack1.array, stack2.array)
-        
-//        if stack1 == stack2 {
-//            print("equal stack1(\(stack1.array)), stack2(\(stack2.array))")
-//        } else {
-//            print("not equal stack1(\(stack1.array)), stack2(\(stack2.array))")
-//        }
     }
     
     func testIterator() {
